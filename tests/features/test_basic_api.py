@@ -6,10 +6,11 @@ def test_geocode_single_location():
     """✅ Test Geocode().get_or_create_location() directly."""
     geocoder = Geocode()
     result = geocoder.get_or_create_location(None, "Chicago, Illinois, USA")
-    assert result.get("latitude") is not None
-    assert result.get("longitude") is not None
-    assert "confidence_label" in result
-    assert "confidence_score" in result
+    assert result is not None
+    assert result.latitude is not None
+    assert result.longitude is not None
+    assert hasattr(result, "confidence_label")
+    assert hasattr(result, "confidence_score")
 
 
 def test_list_trees(client):

@@ -66,5 +66,6 @@ def test_apply_manual_fixes_on_mock_data(tmp_path):
     assert norm_name in manual_fixes
 
     result = geo.get_or_create_location(None, "Ackerman, Choctaw, Mississippi, USA")
-    assert result["confidence_label"] == "manual"
-    assert result["latitude"] == 33.3037
+    assert result is not None
+    assert result.confidence_label == "manual"
+    assert result.latitude == 33.3037

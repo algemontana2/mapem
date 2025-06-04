@@ -77,11 +77,13 @@ def main():
             skipped += 1
             continue
 
-        if result and result.get("lat") is not None:
-            log.info(f"✅ Geocode success: {result['raw_name']} → ({result['lat']}, {result['lng']})")
-            match.latitude = result["lat"]
-            match.longitude = result["lng"]
-            match.status = result.get("status", "geocoded")
+        if result and result.latitude is not None:
+            log.info(
+                f"✅ Geocode success: {result.raw_name} → ({result.latitude}, {result.longitude})"
+            )
+            match.latitude = result.latitude
+            match.longitude = result.longitude
+            match.status = getattr(result, "status", "geocoded")
             session.add(match)
             retried += 1
         else:
