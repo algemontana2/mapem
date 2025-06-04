@@ -6,7 +6,7 @@ import os  # ← needed by test_override_applies_before_geocoder
 
 
 from backend.services.location_service import LocationService
-from backend.services.location_processor import LocationOut
+from backend.models.location_models import LocationOut
 
 
 def fake_timestamp() -> str:
@@ -61,23 +61,27 @@ def service(monkeypatch) -> LocationService:
             Anything else returns None so the code drops to the fallback path.
             """
             if normalized_name == "realcity_rc":
-                return {
-                    "normalized_name": "realcity_rc",
-                    "latitude": 5.5,
-                    "longitude": 6.6,
-                    "confidence_score": 0.9,
-                    "status": "ok",
-                    "source": "external",
-                }
+                return LocationOut(
+                    raw_name="RealCity, RC",
+                    normalized_name="realcity_rc",
+                    latitude=5.5,
+                    longitude=6.6,
+                    confidence_score=0.9,
+                    status="ok",
+                    source="external",
+                    timestamp=fake_timestamp(),
+                )
             if normalized_name == "mississippi":
-                return {
-                    "normalized_name": "mississippi",
-                    "latitude": 0,
-                    "longitude": 0,
-                    "confidence_score": 0.5,
-                    "status": "vague_state_pre1890",
-                    "source": "vague",
-                }
+                return LocationOut(
+                    raw_name="Mississippi",
+                    normalized_name="mississippi",
+                    latitude=0,
+                    longitude=0,
+                    confidence_score=0.5,
+                    status="vague_state_pre1890",
+                    source="vague",
+                    timestamp=fake_timestamp(),
+                )
             return None
 
     monkeypatch.setattr(

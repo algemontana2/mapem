@@ -1,5 +1,6 @@
 import pytest
-from backend.services.geocode import Geocode, LocationOut
+from backend.services.geocode import Geocode
+from backend.models.location_models import LocationOut
 
 @pytest.fixture
 def geocoder():

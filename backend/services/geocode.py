@@ -6,6 +6,8 @@ import logging
 from datetime import datetime
 from urllib.parse import urlencode
 from typing import Optional, Dict, Any
+from backend.models.location_models import LocationOut
+
 from pathlib import Path
 from pydantic import BaseModel
 
@@ -16,15 +18,6 @@ logger = logging.getLogger("backend.services.geocode")
 logger.setLevel(logging.DEBUG)
 
 # ─── Return model (Pydantic, exportable) ───────────
-class LocationOut(BaseModel):
-    raw_name: str
-    normalized_name: str
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
-    confidence_score: float = 0.0
-    confidence_label: str = ""
-    status: str = ""
-    source: str = ""
 
 def classify_location_failure(raw_name):
     generic = {"mississippi", "usa", "tennessee", "louisiana", "unknown"}
@@ -172,9 +165,9 @@ class Geocode:
                     latitude=override["lat"],
                     longitude=override["lng"],
                     confidence_score=1.0,
-                    confidence_label="manual",
                     status="manual",
-                    source="manual"
+                    source="manual",
+                    timestamp=datetime.now().isoformat(),
                 )
             return None
 
@@ -190,9 +183,9 @@ class Geocode:
                     latitude=hp["lat"],
                     longitude=hp["lng"],
                     confidence_score=1.0,
-                    confidence_label="historical",
                     status="historical",
-                    source="historical"
+                    source="historical",
+                    timestamp=datetime.now().isoformat(),
                 )
             return None
 
@@ -212,9 +205,9 @@ class Geocode:
                     latitude=lat,
                     longitude=lng,
                     confidence_score=float(conf or 0.0),
-                    confidence_label="cache",
                     status="ok",
-                    source="cache"
+                    source="cache",
+                    timestamp=datetime.now().isoformat(),
                 )
             logger.warning(f"⚠️ Cache miss or incomplete for '{raw_name}'")
             return None
@@ -232,9 +225,9 @@ class Geocode:
                         latitude=loc.latitude,
                         longitude=loc.longitude,
                         confidence_score=float(loc.confidence_score or 0.0),
-                        confidence_label="db",
                         status="ok",
-                        source="db"
+                        source="db",
+                        timestamp=datetime.now().isoformat(),
                     )
 
         # External geocode (Google first, then Nominatim fallback)
@@ -274,9 +267,9 @@ class Geocode:
             latitude=lat,
             longitude=lng,
             confidence_score=float(conf or 0.0),
-            confidence_label="api",
             status="ok",
-            source=source
+            source=source,
+            timestamp=datetime.now().isoformat(),
         )
 
 # Export the return model for your tests and routes
