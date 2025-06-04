@@ -1,7 +1,7 @@
 // frontend/src/features/upload/pages/UploadPage.jsx
 import React, { useState, useContext, useRef } from "react";
 import { UploadStatusContext } from "@shared/context/UploadStatusContext";
-import  uploadTree  from "@lib/api/upload";
+import { uploadTree } from "@lib/api/api";
 
 export default function UploadPage() {
   const [file, setFile] = useState(null);
@@ -33,7 +33,7 @@ export default function UploadPage() {
     setStatus("📤 Uploading GEDCOM file...");
 
     try {
-      const res = await uploadTree(file);
+      const data = await uploadTree(file);
 
       setStatus("🧬 Parsing & saving tree...");
       await new Promise((r) => setTimeout(r, 1000));
@@ -44,7 +44,7 @@ export default function UploadPage() {
       setStatus("✅ Upload complete!");
       setTimeout(() => setVisible(false), 1500);
 
-      setResponse(res.data);
+      setResponse(data);
       setUploadStatus("✅ Upload successful!");
     } catch (err) {
       setStatus("❌ Upload failed.");
